@@ -1,12 +1,26 @@
-# Notion CLI
+# Notion + Fabric CLI
 
-An unofficial simple CLI for Notion.so
+An unofficial simple CLI for combining the use of [notion](https://notion.so) and [fabric](https://github.com/danielmiessler/fabric/).
+
+## What is this?
+
+As I started playing around with fabric I found myself wanting to store my data in Notion. I developed this CLI to reduce the friction between common tasks I use fabric for and storing the data in Notion.
 
 ## Installation
 
+[Install fabric](https://github.com/danielmiessler/fabric/tree/main?tab=readme-ov-file#quickstart)
+
 ```bash
+# copy the .env.example file to .env
 cp .env.example .env
-# Fill in the .env file with your Notion token, and the page ID you want to add notes to
+```
+
+You'll need to create a new integration in Notion to get a token. You can do this by going to [Notion's My Integrations page](https://www.notion.so/my-integrations) and creating a new integration. Once you have created the integration copy the Internal Integration Secret and paste it into the .env file under "NOTION_TOKEN".
+After creating the integration, you'll need to share the page you want to add notes to with the integration. On the desired page click the "..." button in the top right corner, then click "Connect To" and search for the integration you created.
+
+Now you can build the CLI and install it globally.
+
+```bash
 npm install
 npm build
 npm install -g .
@@ -50,12 +64,16 @@ Creates a page in Notion with a summary of a YouTube video.
 #### Usage
 
 ```bash
-notion-cli yt-summary <uri>
+notion-cli yt-summary [options] <uri>
 ```
 
 #### Arguments
 
 - `<uri>`: The URL of the YouTube video to summarize.
+
+#### Options
+
+- `-m, --model <model>`: The model to use for summarization (default: "gpt-4o").`
 
 #### Examples
 
