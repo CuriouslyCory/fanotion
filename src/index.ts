@@ -6,18 +6,14 @@ import { Command } from "commander";
 
 import "dotenv/config";
 
+import { exec } from "child_process";
+import { promisify } from "util";
 import { z } from "zod";
 
-const storeNoteOptionsSchema = z.object({
-  name: z.string().optional(),
-});
-
-const envSchema = z.object({
-  NOTION_TOKEN: z.string(),
-  NOTION_PAGE_ID: z.string(),
-});
-
-const env = envSchema.parse(process.env);
+import { env } from "./env.js";
+import { createTextBlock } from "./notion-helpers.js";
+import { storeNoteOptionsSchema, youtubeMetadataSchema } from "./schemas.js";
+import { escapeForEcho } from "./string-utils.js";
 
 const program = new Command();
 
@@ -30,32 +26,90 @@ program
   .command("store-note")
   .description("Store a new note in Notion")
   .option("-n, --name <name>", "name of the note")
+  .option("-c, --content <content>", "note content if not piped")
   .action(async (rawOptions) => {
-    const input = await readPipedInput();
     const options = storeNoteOptionsSchema.parse(rawOptions);
-    const name = options.name ?? "World";
+    const input = options?.content ?? (await readPipedInput());
+    const name = options.name ?? "Untitled Note";
     console.log(chalk.green(`Storing note, ${name}!`));
+    const content: BlockObjectRequest[] = [...createTextBlock(input)];
+    createPageInExistingPage(env.NOTION_PAGE_ID ?? "", name, content).catch(
+      console.error
+    );
+  });
+
+program
+  .command("yt-summary <uri>")
+  .description("Create a page in Notion with YouTube video summary")
+  .action(async (rawInput) => {
+    const uri = z.string().url().parse(rawInput);
+    console.log(chalk.green(`Retrieving YouTube metadata`));
+    const ytMetadata = await getYoutubeMetadata(uri);
+    console.log(chalk.green(`Retrieving YouTube transcript`));
+    const transcript = await getYoutubeTranscript(uri);
+    console.log(chalk.green(`Generating summary`));
+    const summary = await fabric("summarize", transcript);
+    console.log(chalk.green(`Generating wisdom`));
+    const wisdom = await fabric("extract_wisdom", transcript);
+    const name = `${ytMetadata.channel}: ${ytMetadata.title}`;
+    console.log(chalk.green(`Saving Note: ${name}`));
     const content: BlockObjectRequest[] = [
-      {
-        object: "block",
-        type: "paragraph",
-        paragraph: {
-          rich_text: [
-            {
-              type: "text",
-              text: {
-                content: input,
-              },
-            },
-          ],
-        },
-      },
-      // Add more content blocks as needed
+      ...createTextBlock(summary),
+      ...createTextBlock(wisdom),
     ];
     createPageInExistingPage(env.NOTION_PAGE_ID ?? "", name, content).catch(
       console.error
     );
   });
+
+async function getYoutubeMetadata(uri: string): Promise<YoutubeMetadata> {
+  const command = `yt --metadata ${uri}`;
+  const execAsync = promisify(exec);
+
+  try {
+    const { stdout } = await execAsync(command);
+    const metadata = youtubeMetadataSchema.parse(JSON.parse(stdout));
+    return metadata;
+  } catch (error) {
+    console.error("Error getting YouTube metadata:", error);
+    throw error;
+  }
+}
+
+async function getYoutubeTranscript(uri: string): Promise<string> {
+  const command = `yt --transcript ${uri}`;
+  const execAsync = promisify(exec);
+
+  try {
+    const { stdout } = await execAsync(command);
+    const transcript = z.string().parse(stdout);
+    return transcript;
+  } catch (error) {
+    console.error("Error getting YouTube metadata:", error);
+    throw error;
+  }
+}
+
+async function fabric(promptTemplate: string, input: string, model = "gpt-4o") {
+  const escapedInput = escapeForEcho(input);
+  const command = `echo "${escapedInput}" | fabric -m ${model} -p ${promptTemplate}`;
+  const execAsync = promisify(exec);
+
+  try {
+    const { stdout } = await execAsync(command);
+    return stdout;
+  } catch (error) {
+    console.error("Error running fabric command:", error);
+    throw error;
+  }
+}
+
+interface YoutubeMetadata {
+  id: string;
+  title: string;
+  channel: string;
+  published_at: string;
+}
 
 program.parse(process.argv);
 
