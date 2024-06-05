@@ -1,11 +1,16 @@
 #!/usr/bin/env node
-
 import { Client } from "@notionhq/client";
-import { Command } from "commander";
+import { type BlockObjectRequest } from "@notionhq/client/build/src/api-endpoints.js";
 import chalk from "chalk";
-import { BlockObjectRequest } from "@notionhq/client/build/src/api-endpoints.js";
+import { Command } from "commander";
+
 import "dotenv/config";
+
 import { z } from "zod";
+
+const storeNoteOptionsSchema = z.object({
+  name: z.string().optional(),
+});
 
 const envSchema = z.object({
   NOTION_TOKEN: z.string(),
@@ -25,9 +30,10 @@ program
   .command("store-note")
   .description("Store a new note in Notion")
   .option("-n, --name <name>", "name of the note")
-  .action(async (options) => {
+  .action(async (rawOptions) => {
     const input = await readPipedInput();
-    const name = options.name || "World";
+    const options = storeNoteOptionsSchema.parse(rawOptions);
+    const name = options.name ?? "World";
     console.log(chalk.green(`Storing note, ${name}!`));
     const content: BlockObjectRequest[] = [
       {
@@ -46,16 +52,19 @@ program
       },
       // Add more content blocks as needed
     ];
-    createPageInExistingPage(env.NOTION_PAGE_ID ?? "", name, content);
+    createPageInExistingPage(env.NOTION_PAGE_ID ?? "", name, content).catch(
+      console.error
+    );
   });
 
 program.parse(process.argv);
 
 /**
- * Function to create a new page in an existing page
- * @param {string} parentPageId - The ID of the parent page
- * @param {string} title - The title of the new page
- * @param {BlockObjectRequest[]} content - The content of the new page
+ * Function to create a new page in an existing page.
+ *
+ * @param {string} parentPageId - The ID of the parent page.
+ * @param {string} title - The title of the new page.
+ * @param {BlockObjectRequest[]} content - The content of the new page.
  */
 async function createPageInExistingPage(
   parentPageId: string,
@@ -66,7 +75,7 @@ async function createPageInExistingPage(
   const notion = new Client({ auth: env.NOTION_TOKEN });
 
   try {
-    const response = await notion.pages.create({
+    await notion.pages.create({
       parent: { page_id: parentPageId },
       properties: {
         title: [
@@ -94,7 +103,7 @@ function readPipedInput(): Promise<string> {
     process.stdin.setEncoding("utf8");
 
     process.stdin.on("data", function (chunk) {
-      data += chunk;
+      data += chunk.toString(); // Convert chunk to a string before concatenating
     });
 
     process.stdin.on("end", function () {

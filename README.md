@@ -6,7 +6,7 @@ An unofficial simple CLI for Notion.so
 
 ```bash
 cp .env.example .env
-# Fill in the .env file with your Notion token
+# Fill in the .env file with your Notion token, and the page ID you want to add notes to
 npm install
 npm build
 npm install -g .
