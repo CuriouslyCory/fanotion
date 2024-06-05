@@ -13,3 +13,9 @@ export const youtubeMetadataSchema = z.object({
 });
 
 export type YoutubeMetadata = z.infer<typeof youtubeMetadataSchema>;
+
+export const ytSummaryOptionsSchema = z.object({
+  model: z.string().optional(),
+});
+
+export type YtSummaryOptions = z.infer<typeof ytSummaryOptionsSchema>;
