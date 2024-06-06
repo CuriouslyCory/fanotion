@@ -9,6 +9,7 @@ import "dotenv/config";
 import { env } from "./env.js";
 import { fabric } from "./helpers/fabric.js";
 import { createPageInExistingPage, createTextBlock } from "./helpers/notion.js";
+import { readPipedInput } from "./helpers/stdin.js";
 import { getYoutubeMetadata, getYoutubeTranscript } from "./helpers/youtube.js";
 import { storeNoteOptionsSchema, ytSummaryOptionsSchema } from "./schemas.js";
 
@@ -16,7 +17,7 @@ const program = new Command();
 
 program
   .name("notion-cli")
-  .description("A simple CLI tool to interact with Notion API")
+  .description("A CLI tool to interact with notion.so and fabric")
   .version("1.0.0");
 
 program
@@ -70,28 +71,3 @@ program
   });
 
 program.parse(process.argv);
-
-/**
- * Function to read piped input from stdin.
- *
- * @returns {Promise<string>} The piped input as a string.
- */
-function readPipedInput(): Promise<string> {
-  return new Promise((resolve, reject) => {
-    let data = "";
-    process.stdin.resume();
-    process.stdin.setEncoding("utf8");
-
-    process.stdin.on("data", function (chunk) {
-      data += chunk.toString(); // Convert chunk to a string before concatenating
-    });
-
-    process.stdin.on("end", function () {
-      resolve(data);
-    });
-
-    process.stdin.on("error", function (error) {
-      reject(error);
-    });
-  });
-}
