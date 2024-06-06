@@ -1,5 +1,6 @@
 import { exec } from "child_process";
 import { promisify } from "util";
+import { env } from "src/env.js";
 
 import { escapeForEcho } from "./string-utils.js";
 
@@ -15,7 +16,7 @@ import { escapeForEcho } from "./string-utils.js";
 export async function fabric(
   promptTemplate: string,
   input: string,
-  model = "gpt-4o"
+  model = env.DEFAULT_MODEL
 ) {
   const escapedInput = escapeForEcho(input);
   const command = `echo "${escapedInput}" | fabric -m ${model} -p ${promptTemplate}`;

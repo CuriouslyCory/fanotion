@@ -57,12 +57,16 @@ program
       return;
     }
     console.log(chalk.green(`Generating summary`));
-    const summary = await fabric("summarize", transcript, model ?? "gpt-4o");
+    const summary = await fabric(
+      "summarize",
+      transcript,
+      model ?? env.DEFAULT_MODEL
+    );
     console.log(chalk.green(`Generating wisdom`));
     const wisdom = await fabric(
       "extract_wisdom",
       transcript,
-      model ?? "gpt-4o"
+      model ?? env.DEFAULT_MODEL
     );
     const name = `${ytMetadata.channel}: ${ytMetadata.title}`;
     console.log(chalk.green(`Saving Note: ${name}`));
@@ -93,13 +97,13 @@ program
     const summary = await fabric(
       "summarize",
       pageContent.body,
-      model ?? "gpt-4o"
+      model ?? env.DEFAULT_MODEL
     );
     console.log(chalk.green(`Generating wisdom`));
     const wisdom = await fabric(
       "extract_wisdom",
       pageContent.body,
-      model ?? "gpt-4o"
+      model ?? env.DEFAULT_MODEL
     );
     const name = `${pageContent.title} Summary`;
     console.log(chalk.green(`Saving Note: ${name}`));
