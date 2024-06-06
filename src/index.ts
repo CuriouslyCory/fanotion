@@ -16,7 +16,7 @@ import { storeNoteOptionsSchema, ytSummaryOptionsSchema } from "./schemas.js";
 const program = new Command();
 
 program
-  .name("notion-cli")
+  .name("fanotion")
   .description("A CLI tool to interact with notion.so and fabric")
   .version("1.0.0");
 

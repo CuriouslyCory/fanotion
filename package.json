@@ -1,7 +1,7 @@
 {
-  "name": "notion-cli",
+  "name": "fanotion",
   "version": "1.0.3",
-  "description": "Simple CLI tool for interacting with Notion's API",
+  "description": "Simple CLI tool for combining the fabric AI cli and notion.so",
   "license": "MIT",
   "scripts": {
     "build": "tsup",
@@ -16,10 +16,11 @@
   },
   "main": "dist/index.js",
   "bin": {
-    "notion-cli": "./dist/index.js"
+    "fanotion": "./dist/index.js"
   },
   "type": "module",
   "keywords": [
+    "fabric",
     "notion",
     "cli",
     "command-line",
