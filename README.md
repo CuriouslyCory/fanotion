@@ -26,6 +26,9 @@ npm run build
 npm install -g .
 ```
 
+> [!NOTE]
+> 2024.06.05: I'm working on configuring for publishing to npm to streamline the installation process.
+
 ## Commands
 
 ### `fanotion store-note`
@@ -109,3 +112,12 @@ fanotion yt-summary [options] <uri>
 3. **Summarize a YouTube video and store it as a Notion page**:
    - Command: `fanotion yt-summary "https://www.youtube.com/watch?v=example"`
    - Description: Creates a Notion page with a summary and wisdom extracted from the specified YouTube video.
+
+### Planned Features
+
+- [ ] Publish to NPM for quick install.
+- [ ] Add setup command instead.
+- [ ] Add support for storing notes in different pages.
+- [ ] Add auto categorization tool to help organize notes.
+- [ ] Add prompt suggestion to automatically find the best tool for the job.
+- [ ] Add support for storing notes in different databases.
