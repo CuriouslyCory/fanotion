@@ -7,6 +7,7 @@ import { z } from "zod";
 import "dotenv/config";
 
 import { env } from "./env.js";
+import { getPageContent } from "./helpers/browser.js";
 import { fabric } from "./helpers/fabric.js";
 import { createPageInExistingPage, createTextBlock } from "./helpers/notion.js";
 import { readPipedInput } from "./helpers/stdin.js";
@@ -62,6 +63,43 @@ program
     const name = `${ytMetadata.channel}: ${ytMetadata.title}`;
     console.log(chalk.green(`Saving Note: ${name}`));
     const content: BlockObjectRequest[] = [
+      ...createTextBlock(summary),
+      ...createTextBlock(wisdom),
+    ];
+    createPageInExistingPage(env.NOTION_PAGE_ID ?? "", name, content).catch(
+      console.error
+    );
+  });
+
+program
+  .command("page-summary")
+  .description("Create a page summary in Notion")
+  .argument("<uri>", "URI of the page")
+  .option(
+    "-m, --model <model>",
+    "name of the AI model to use (default: gpt-4o)"
+  )
+  .action(async (rawUri, rawOptions) => {
+    const uri = z.string().url().parse(rawUri);
+    const { model } = ytSummaryOptionsSchema.parse(rawOptions);
+    console.log(chalk.green(`Retrieving page content`));
+    const pageContent = await getPageContent(uri);
+    console.log(chalk.green(`Generating summary`));
+    const summary = await fabric(
+      "summarize",
+      pageContent.body,
+      model ?? "gpt-4o"
+    );
+    console.log(chalk.green(`Generating wisdom`));
+    const wisdom = await fabric(
+      "extract_wisdom",
+      pageContent.body,
+      model ?? "gpt-4o"
+    );
+    const name = `${pageContent.title} Summary`;
+    console.log(chalk.green(`Saving Note: ${name}`));
+    const content: BlockObjectRequest[] = [
+      ...createTextBlock(uri),
       ...createTextBlock(summary),
       ...createTextBlock(wisdom),
     ];
