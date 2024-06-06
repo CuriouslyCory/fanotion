@@ -63,6 +63,7 @@ program
     const name = `${ytMetadata.channel}: ${ytMetadata.title}`;
     console.log(chalk.green(`Saving Note: ${name}`));
     const content: BlockObjectRequest[] = [
+      ...createTextBlock(uri),
       ...createTextBlock(summary),
       ...createTextBlock(wisdom),
     ];

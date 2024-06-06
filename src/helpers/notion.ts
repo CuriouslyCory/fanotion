@@ -3,6 +3,14 @@ import { type BlockObjectRequest } from "@notionhq/client/build/src/api-endpoint
 
 import { env } from "../env.js";
 
+/**
+ * Creates a text block for a Notion page.
+ *
+ * @description Create a text block for notion. Splits the text into multiple blocks if it exceeds
+ *              2000 characters.
+ * @param text
+ * @returns {BlockObjectRequest[]}
+ */
 export function createTextBlock(text: string): BlockObjectRequest[] {
   // text blocks can only be 2000 characters, so split the text into multiple blocks
   const blocks: BlockObjectRequest[] = [];
