@@ -1,7 +1,7 @@
 import { exec } from "child_process";
 import { promisify } from "util";
 
-import { escapeForEcho } from "../string-utils.js";
+import { escapeForEcho } from "./string-utils.js";
 
 /**
  * Function to run a fabric command.

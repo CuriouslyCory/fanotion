@@ -22,7 +22,7 @@ Now you can build the CLI and install it globally.
 
 ```bash
 npm install
-npm build
+npm run build
 npm install -g .
 ```
 
