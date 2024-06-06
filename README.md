@@ -60,6 +60,12 @@ fanotion store-note [options]
   echo "Content from another command" | fanotion store-note -n "Piped Note"
   ```
 
+- Store a note with content piped from fabric:
+
+  ```bash
+  yt --transcript https://youtu.be/MQmfSBdIfno?si=gf50RUHYXdU4qfS2 | fabric -p extract_wisdom | fanotion store-note -n "Wisdom: Function Calling with Opensource LLMs"
+  ```
+
 ### `fanotion yt-summary <uri>`
 
 Creates a page in Notion with a summary of a YouTube video.
@@ -83,35 +89,34 @@ fanotion yt-summary [options] <uri>
 - Create a summary page for a YouTube video:
 
   ```bash
-  fanotion yt-summary "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+  fanotion yt-summary https://www.youtube.com/live/GxnaWre7N4Y?si=_TPX6Iir_aqQ6WO_
   ```
 
-### Description of Commands
+### `fanotion page-summary <uri>`
 
-1. **store-note**:
+Creates a page in Notion with a summary of a YouTube video.
 
-   - This command stores a new note in Notion. You can specify the name of the note with the `-n` option and the content with the `-c` option. If content is not provided via the `-c` option, it can be piped from another command.
-   - Example: `fanotion store-note -n "Daily Log" -c "Today's log content..."`
+#### Usage
 
-2. **yt-summary**:
-   - This command creates a new page in Notion with a summary of a specified YouTube video. It retrieves metadata and transcript of the video, generates a summary and wisdom, and stores them in a Notion page.
-   - Example: `fanotion yt-summary "https://www.youtube.com/watch?v=dQw4w9WgXcQ"`
+```bash
+fanotion page-summary [options] <uri>
+```
 
-### Detailed Examples
+#### Arguments
 
-1. **Storing a Note with Command-Line Content**:
+- `<uri>`: The URL of the YouTube video to summarize.
 
-   - Command: `fanotion store-note -n "Project Ideas" -c "Brainstorming session notes for new project ideas..."`
-   - Description: Stores a note titled "Project Ideas" with the provided content.
+#### Options
 
-2. **Storing a Note with Piped Content**:
+- `-m, --model <model>`: The model to use for summarization (default: "gpt-4o").`
 
-   - Command: `echo "These are piped notes" | fanotion store-note -n "Piped Notes"`
-   - Description: Stores a note titled "Piped Notes" with content piped from the `echo` command.
+#### Examples
 
-3. **Summarize a YouTube video and store it as a Notion page**:
-   - Command: `fanotion yt-summary "https://www.youtube.com/watch?v=example"`
-   - Description: Creates a Notion page with a summary and wisdom extracted from the specified YouTube video.
+- Create a summary page for a web url:
+
+  ```bash
+  fanotion page-summary https://github.com/danielmiessler/fabric/blob/main/README.md
+  ```
 
 ### Planned Features
 
