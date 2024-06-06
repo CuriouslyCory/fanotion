@@ -52,6 +52,10 @@ program
     const ytMetadata = await getYoutubeMetadata(uri);
     console.log(chalk.green(`Retrieving YouTube transcript`));
     const transcript = await getYoutubeTranscript(uri);
+    if (transcript.startsWith("Transcript not available")) {
+      console.log(chalk.red(`Transcript not available`));
+      return;
+    }
     console.log(chalk.green(`Generating summary`));
     const summary = await fabric("summarize", transcript, model ?? "gpt-4o");
     console.log(chalk.green(`Generating wisdom`));
