@@ -1,7 +1,4 @@
 #!/usr/bin/env node
-import { exec } from "child_process";
-import { promisify } from "util";
-import { Client } from "@notionhq/client";
 import { type BlockObjectRequest } from "@notionhq/client/build/src/api-endpoints.js";
 import chalk from "chalk";
 import { Command } from "commander";
@@ -10,13 +7,10 @@ import { z } from "zod";
 import "dotenv/config";
 
 import { env } from "./env.js";
-import { createTextBlock } from "./notion-helpers.js";
-import {
-  storeNoteOptionsSchema,
-  youtubeMetadataSchema,
-  ytSummaryOptionsSchema,
-} from "./schemas.js";
-import { escapeForEcho } from "./string-utils.js";
+import { fabric } from "./helpers/fabric.js";
+import { createPageInExistingPage, createTextBlock } from "./helpers/notion.js";
+import { getYoutubeMetadata, getYoutubeTranscript } from "./helpers/youtube.js";
+import { storeNoteOptionsSchema, ytSummaryOptionsSchema } from "./schemas.js";
 
 const program = new Command();
 
@@ -77,92 +71,11 @@ program
 
 program.parse(process.argv);
 
-async function getYoutubeMetadata(uri: string): Promise<YoutubeMetadata> {
-  const command = `yt --metadata ${uri}`;
-  const execAsync = promisify(exec);
-
-  try {
-    const { stdout } = await execAsync(command);
-    const metadata = youtubeMetadataSchema.parse(JSON.parse(stdout));
-    return metadata;
-  } catch (error) {
-    console.error("Error getting YouTube metadata:", error);
-    throw error;
-  }
-}
-
-async function getYoutubeTranscript(uri: string): Promise<string> {
-  const command = `yt --transcript ${uri}`;
-  const execAsync = promisify(exec);
-
-  try {
-    const { stdout } = await execAsync(command);
-    const transcript = z.string().parse(stdout);
-    return transcript;
-  } catch (error) {
-    console.error("Error getting YouTube metadata:", error);
-    throw error;
-  }
-}
-
-async function fabric(promptTemplate: string, input: string, model = "gpt-4o") {
-  const escapedInput = escapeForEcho(input);
-  const command = `echo "${escapedInput}" | fabric -m ${model} -p ${promptTemplate}`;
-  const execAsync = promisify(exec);
-
-  try {
-    const { stdout } = await execAsync(command);
-    return stdout;
-  } catch (error) {
-    console.error("Error running fabric command:", error);
-    throw error;
-  }
-}
-
-interface YoutubeMetadata {
-  id: string;
-  title: string;
-  channel: string;
-  published_at: string;
-}
-
 /**
- * Function to create a new page in an existing page.
+ * Function to read piped input from stdin.
  *
- * @param {string} parentPageId - The ID of the parent page.
- * @param {string} title - The title of the new page.
- * @param {BlockObjectRequest[]} content - The content of the new page.
+ * @returns {Promise<string>} The piped input as a string.
  */
-async function createPageInExistingPage(
-  parentPageId: string,
-  title: string,
-  content: BlockObjectRequest[]
-) {
-  // Initialize the Notion client
-  const notion = new Client({ auth: env.NOTION_TOKEN });
-
-  try {
-    await notion.pages.create({
-      parent: { page_id: parentPageId },
-      properties: {
-        title: [
-          {
-            type: "text",
-            text: {
-              content: title,
-            },
-          },
-        ],
-      },
-      children: content,
-    });
-
-    console.log("Page created successfully");
-  } catch (error) {
-    console.error("Error creating page:", error);
-  }
-}
-
 function readPipedInput(): Promise<string> {
   return new Promise((resolve, reject) => {
     let data = "";

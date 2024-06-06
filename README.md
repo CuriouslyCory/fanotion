@@ -106,6 +106,6 @@ notion-cli yt-summary [options] <uri>
    - Command: `echo "These are piped notes" | notion-cli store-note -n "Piped Notes"`
    - Description: Stores a note titled "Piped Notes" with content piped from the `echo` command.
 
-3. **Creating a YouTube Summary Page**:
+3. **Summarize a YouTube video and store it as a Notion page**:
    - Command: `notion-cli yt-summary "https://www.youtube.com/watch?v=example"`
    - Description: Creates a Notion page with a summary and wisdom extracted from the specified YouTube video.

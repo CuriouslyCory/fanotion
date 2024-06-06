@@ -22,7 +22,7 @@
     "tsup.config.ts",
     "reset.d.ts",
     "prettier.config.mjs",
-    "src/**/*.ts"
+    "src"
   ],
   "exclude": ["node_modules"]
 }
