@@ -20,10 +20,20 @@ After creating the integration, you'll need to share the page you want to add no
 
 Now you can build the CLI and install it globally.
 
+### npm
+
 ```bash
 npm install
 npm run build
 npm install -g .
+```
+
+### pnpm
+
+```bash
+pnpm install
+pnpm run build
+pnpm link --global
 ```
 
 > [!NOTE]
