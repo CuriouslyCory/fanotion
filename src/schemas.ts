@@ -7,9 +7,15 @@ export const storeNoteOptionsSchema = z.object({
 
 export const youtubeMetadataSchema = z.object({
   id: z.string(),
-  channel: z.string(),
   title: z.string(),
-  published_at: z.string(),
+  description: z.string(),
+  publishedAt: z.string(),
+  channelId: z.string(),
+  channelTitle: z.string(),
+  categoryId: z.string(),
+  tags: z.array(z.string()),
+  viewCount: z.number(),
+  likeCount: z.number(),
 });
 
 export type YoutubeMetadata = z.infer<typeof youtubeMetadataSchema>;

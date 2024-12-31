@@ -68,7 +68,7 @@ program
       transcript,
       model ?? env.DEFAULT_MODEL
     );
-    const name = `${ytMetadata.channel}: ${ytMetadata.title}`;
+    const name = `${ytMetadata.channelTitle}: ${ytMetadata.title}`;
     console.log(chalk.green(`Saving Note: ${name}`));
     const content: BlockObjectRequest[] = [
       ...createTextBlock(uri),

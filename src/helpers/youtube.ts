@@ -12,7 +12,7 @@ import { youtubeMetadataSchema, type YoutubeMetadata } from "../schemas.js";
  * @returns {Promise<string>} The transcript of the YouTube video.
  */
 export async function getYoutubeTranscript(uri: string): Promise<string> {
-  const command = `yt --transcript ${uri}`;
+  const command = `fabric -y "${uri}" --transcript`;
   const execAsync = promisify(exec);
 
   try {
@@ -35,7 +35,7 @@ export async function getYoutubeTranscript(uri: string): Promise<string> {
 export async function getYoutubeMetadata(
   uri: string
 ): Promise<YoutubeMetadata> {
-  const command = `yt --metadata ${uri}`;
+  const command = `fabric -y "${uri}" --metadata`;
   const execAsync = promisify(exec);
 
   try {
