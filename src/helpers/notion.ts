@@ -6,33 +6,70 @@ import { env } from "../env.js";
 /**
  * Creates a text block for a Notion page.
  *
- * @description Create a text block for notion. Splits the text into multiple blocks if it exceeds
- *              2000 characters.
  * @param text
  * @returns {BlockObjectRequest[]}
  */
 export function createTextBlock(text: string): BlockObjectRequest[] {
-  // text blocks can only be 2000 characters, so split the text into multiple blocks
   const blocks: BlockObjectRequest[] = [];
-  let remainingText = text;
-  while (remainingText.length > 0) {
-    const currentText = remainingText.slice(0, 2000);
-    remainingText = remainingText.slice(2000);
-    blocks.push({
-      object: "block",
-      type: "paragraph",
-      paragraph: {
-        rich_text: [
-          {
-            type: "text",
-            text: {
-              content: currentText,
+
+  // First split on double newlines
+  const paragraphs = text.split(/\n\s*\n/);
+
+  for (const paragraph of paragraphs) {
+    let remainingText = paragraph;
+
+    while (remainingText.length > 2000) {
+      // Try to split at newline near 2000
+      let splitIndex = remainingText.slice(0, 2000).lastIndexOf("\n");
+
+      // If no newline found, try to split at space
+      if (splitIndex === -1) {
+        splitIndex = remainingText.slice(0, 2000).lastIndexOf(" ");
+      }
+
+      // If no space found, force split at 2000
+      if (splitIndex === -1) {
+        splitIndex = 1999;
+      }
+
+      const currentText = remainingText.slice(0, splitIndex);
+      remainingText = remainingText.slice(splitIndex).trim();
+
+      blocks.push({
+        object: "block",
+        type: "paragraph",
+        paragraph: {
+          rich_text: [
+            {
+              type: "text",
+              text: {
+                content: currentText,
+              },
             },
-          },
-        ],
-      },
-    });
+          ],
+        },
+      });
+    }
+
+    // Add remaining text if any
+    if (remainingText.length > 0) {
+      blocks.push({
+        object: "block",
+        type: "paragraph",
+        paragraph: {
+          rich_text: [
+            {
+              type: "text",
+              text: {
+                content: remainingText,
+              },
+            },
+          ],
+        },
+      });
+    }
   }
+
   return blocks;
 }
 
