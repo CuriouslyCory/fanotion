@@ -37,6 +37,20 @@ export function createTextBlock(text: string): BlockObjectRequest[] {
 }
 
 /**
+ * Create a new Heading block.
+ *
+ * @param {string} title - The title of the heading.
+ * @returns {BlockObjectRequest}
+ */
+export function createHeadingBlock(title: string): BlockObjectRequest {
+  return {
+    object: "block",
+    type: "heading_2",
+    heading_2: { rich_text: [{ type: "text", text: { content: title } }] },
+  };
+}
+
+/**
  * Function to create a new page in an existing page.
  *
  * @param {string} parentPageId - The ID of the parent page.

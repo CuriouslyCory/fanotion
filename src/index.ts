@@ -9,7 +9,11 @@ import "dotenv/config";
 import { env } from "./env.js";
 import { getPageContent } from "./helpers/browser.js";
 import { fabric } from "./helpers/fabric.js";
-import { createPageInExistingPage, createTextBlock } from "./helpers/notion.js";
+import {
+  createHeadingBlock,
+  createPageInExistingPage,
+  createTextBlock,
+} from "./helpers/notion.js";
 import { readPipedInput } from "./helpers/stdin.js";
 import { getYoutubeMetadata, getYoutubeTranscript } from "./helpers/youtube.js";
 import { storeNoteOptionsSchema, ytSummaryOptionsSchema } from "./schemas.js";
@@ -72,7 +76,9 @@ program
     console.log(chalk.green(`Saving Note: ${name}`));
     const content: BlockObjectRequest[] = [
       ...createTextBlock(uri),
+      createHeadingBlock("Summary"),
       ...createTextBlock(summary),
+      createHeadingBlock("Wisdom"),
       ...createTextBlock(wisdom),
     ];
     createPageInExistingPage(env.NOTION_PAGE_ID ?? "", name, content).catch(
