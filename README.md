@@ -4,11 +4,11 @@ An unofficial simple CLI for combining the use of [notion](https://notion.so) an
 
 ## What is this?
 
-As I started playing around with fabric I found myself wanting to store my data in Notion. I developed this CLI to reduce the friction between common tasks I use fabric for and storing the data in Notion.
+A tool to help you generate notes, summaries, and wisdom from web pages and youtube content, and drop those notes right into notion with a single CLI command. Fabric comes with an extensive set of prompts and utilities to help you generate the data you need. This CLI is designed to make it easier to generate the data and drop it into notion.
 
 ## Installation
 
-[Install fabric](https://github.com/danielmiessler/fabric/tree/main?tab=readme-ov-file#quickstart)
+This script heavily relies on [**fabric**](https://github.com/danielmiessler/fabric) prompts and utilities. [Install and configure fabric](https://github.com/danielmiessler/fabric/tree/main?tab=readme-ov-file#quickstart) before continuing.
 
 ```bash
 # copy the .env.example file to .env
