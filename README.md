@@ -155,3 +155,16 @@ fanotion page-summary [options] <uri>
 - [ ] Add auto categorization tool to help organize notes.
 - [ ] Add prompt suggestion to automatically find the best tool for the job.
 - [ ] Add support for storing notes in different databases.
+- [ ] Better notion markdown formatting.
+
+## Troubleshoooting
+
+- If you're on Ubuntu > 23 and get the following error: "Error: Failed to launch the browser process!" try adding the following to your .bashrc or .zshrc file per [chromium official docs](https://chromium.googlesource.com/chromium/src/+/main/docs/security/apparmor-userns-restrictions.md):
+
+```bash
+export CHROME_DEVEL_SANDBOX=/opt/google/chrome/chrome-sandbox
+```
+
+## Known Issues
+
+- The notion API has a 2000 character limit for the content of a page. I've added data chunking to help with this, but it can mes up formatting and other display issues.
