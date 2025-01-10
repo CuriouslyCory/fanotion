@@ -146,8 +146,11 @@ fanotion page-summary [options] <uri>
 
 ### Planned Features
 
+- [x] (yt-summary) Summarize and generate notes from YouTube videos, and store them in Notion.
+- [x] (page-summary) Summarize and generate notes from web pages, and store them in Notion.
+- [x] (store-note) Create a page in notion with specific content.
 - [ ] Publish to NPM for quick install.
-- [ ] Add setup command instead.
+- [ ] Add setup command.
 - [ ] Add support for storing notes in different pages.
 - [ ] Add auto categorization tool to help organize notes.
 - [ ] Add prompt suggestion to automatically find the best tool for the job.
