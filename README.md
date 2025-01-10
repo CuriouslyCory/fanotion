@@ -18,7 +18,23 @@ cp .env.example .env
 You'll need to create a new integration in Notion to get a token. You can do this by going to [Notion's My Integrations page](https://www.notion.so/my-integrations) and creating a new integration. Once you have created the integration copy the Internal Integration Secret and paste it into the .env file under "NOTION_TOKEN".
 After creating the integration, you'll need to share the page you want to add notes to with the integration. On the desired page click the "..." button in the top right corner, then click "Connect To" and search for the integration you created.
 
-Now you can build the CLI and install it globally.
+The easiest way to run this is directly from the repo directory.
+
+```bash
+# install dependencies (first time only)
+pnpm i
+
+# run the CLI
+pnpm start <fanotion command>
+
+# Summarize a YouTube video
+pnpm start yt-summary https://www.youtube.com/watch?v=tl_GXsRKXtQ
+
+# Summarize a web page
+pnpm start page-summary https://github.com/CuriouslyCory/fanotion/blob/main/README.md
+```
+
+Alternatively you can build the CLI and install it globally, but you'll need to add the .env variables to your .bashrc or .zshrc file.
 
 ### npm
 
