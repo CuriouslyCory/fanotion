@@ -187,12 +187,14 @@ export async function getYoutubeTranscript(videoId: string): Promise<string> {
         })
         .join(" ") || "";
 
+    // console.log(chalk.green(`Transcript: ${transcript}`));
+
     return transcript
-      .replaceAll("&#39;", "'")
-      .replaceAll("&quot;", '"')
-      .replaceAll("&amp;", "&")
-      .replaceAll("&lt;", "<")
-      .replaceAll("&gt;", ">");
+      .replaceAll("&amp;#39;", "'")
+      .replaceAll("&amp;quot;", '"')
+      .replaceAll("&amp;amp;", "&")
+      .replaceAll("&amp;lt;", "<")
+      .replaceAll("&amp;gt;", ">");
   }
   throw new Error("No transcript found");
 }
