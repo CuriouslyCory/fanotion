@@ -44,18 +44,22 @@ program
 program
   .command("yt-summary")
   .description("Create a page in Notion with YouTube video summary")
-  .argument("<uri>", "URI of the YouTube video")
+  .argument("<videoId>", "videoId of the YouTube video")
+  .allowUnknownOption()
   .option(
     "-m, --model <model>",
     "name of the AI model to use (default: gpt-4o)"
   )
   .action(async (rawUri, rawOptions) => {
-    const uri = z.string().url().parse(rawUri);
+    console.log("rawUri", rawUri);
+    console.log("rawOptions", rawOptions);
+    const videoId = z.string().parse(rawUri);
     const { model } = ytSummaryOptionsSchema.parse(rawOptions);
     console.log(chalk.green(`Retrieving YouTube metadata`));
-    const ytMetadata = await getYoutubeMetadata(uri);
+    const ytMetadata = await getYoutubeMetadata(videoId);
     console.log(chalk.green(`Retrieving YouTube transcript`));
-    const transcript = await getYoutubeTranscript(uri);
+    const transcript = await getYoutubeTranscript(videoId);
+    console.log(chalk.green(`Transcript: ${transcript}`));
     if (transcript.startsWith("Transcript not available")) {
       console.log(chalk.red(`Transcript not available`));
       return;
@@ -75,14 +79,22 @@ program
     const name = `${ytMetadata.channelTitle}: ${ytMetadata.title}`;
     console.log(chalk.green(`Saving Note: ${name}`));
     const content: BlockObjectRequest[] = [
-      ...createTextBlock(uri),
+      ...createTextBlock(ytMetadata.title),
+      ...createTextBlock(videoId),
       createHeadingBlock("Summary"),
       ...createTextBlock(summary),
       createHeadingBlock("Wisdom"),
       ...createTextBlock(wisdom),
     ];
-    createPageInExistingPage(env.NOTION_PAGE_ID ?? "", name, content).catch(
-      console.error
+    const page = await createPageInExistingPage(
+      env.NOTION_PAGE_ID ?? "",
+      name,
+      content
+    );
+    await createPageInExistingPage(
+      page.id,
+      "Transcript",
+      createTextBlock(transcript)
     );
   });
 
@@ -90,6 +102,7 @@ program
   .command("page-summary")
   .description("Create a page summary in Notion")
   .argument("<uri>", "URI of the page")
+  .allowUnknownOption()
   .option(
     "-m, --model <model>",
     "name of the AI model to use (default: gpt-4o)"

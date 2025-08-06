@@ -28,15 +28,18 @@
   ],
   "author": "(Curiously) Cory Sougstad <cory@curiouslycory.com> (https://curiouslycory.com)",
   "dependencies": {
-    "@distube/ytdl-core": "^4.15.8",
+    "@distube/ytdl-core": "^4.16.12",
     "@notionhq/client": "^2.2.15",
     "@total-typescript/ts-reset": "^0.5.1",
+    "@types/jsdom": "^21.1.7",
+    "bgutils-js": "^3.2.0",
     "chalk": "^5.3.0",
     "commander": "^12.1.0",
     "dotenv": "^16.4.5",
+    "jsdom": "^26.1.0",
     "puppeteer": "^24.0.0",
     "tsup": "^8.1.0",
-    "ytdl-core": "npm:@distube/ytdl-core@^4.15.8",
+    "youtubei.js": "^15.0.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {

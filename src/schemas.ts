@@ -9,13 +9,13 @@ export const youtubeMetadataSchema = z.object({
   id: z.string(),
   title: z.string(),
   description: z.string(),
-  publishedAt: z.string(),
+  publishedAt: z.string().optional(),
   channelId: z.string(),
   channelTitle: z.string(),
   categoryId: z.string(),
   tags: z.array(z.string()),
   viewCount: z.number(),
-  likeCount: z.number(),
+  likeCount: z.number().optional(),
 });
 
 export type YoutubeMetadata = z.infer<typeof youtubeMetadataSchema>;

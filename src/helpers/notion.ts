@@ -1,5 +1,8 @@
 import { Client } from "@notionhq/client";
-import { type BlockObjectRequest } from "@notionhq/client/build/src/api-endpoints.js";
+import {
+  type BlockObjectRequest,
+  type CreatePageResponse,
+} from "@notionhq/client/build/src/api-endpoints.js";
 
 import { env } from "../env.js";
 
@@ -98,12 +101,12 @@ export async function createPageInExistingPage(
   parentPageId: string,
   title: string,
   content: BlockObjectRequest[]
-) {
+): Promise<CreatePageResponse> {
   // Initialize the Notion client
   const notion = new Client({ auth: env.NOTION_TOKEN });
 
   try {
-    await notion.pages.create({
+    const page = await notion.pages.create({
       parent: { page_id: parentPageId },
       properties: {
         title: [
@@ -119,7 +122,9 @@ export async function createPageInExistingPage(
     });
 
     console.log("Page created successfully");
+    return page;
   } catch (error) {
     console.error("Error creating page:", error);
+    throw error;
   }
 }
